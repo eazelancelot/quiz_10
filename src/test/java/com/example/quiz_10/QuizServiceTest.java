@@ -33,10 +33,10 @@ public class QuizServiceTest {
 
 	@BeforeEach
 	private void addData() {
-		CreateOrUpdateReq req = new CreateOrUpdateReq();
-		req.setQuizList(new ArrayList<>(Arrays.asList(new Quiz(2, 1, "test", "test", LocalDate.now().plusDays(2),
-				LocalDate.now().plusDays(9), "q_test", "single", true, "A;B;C;D", false))));
-		quizService.create(req);
+//		CreateOrUpdateReq req = new CreateOrUpdateReq();
+//		req.setQuizList(new ArrayList<>(Arrays.asList(new Quiz(2, 1, "test", "test", LocalDate.now().plusDays(2),
+//				LocalDate.now().plusDays(9), "q_test", "single", true, "A;B;C;D", false))));
+//		quizService.create(req);
 //		System.out.println("before each test");
 	}
 
