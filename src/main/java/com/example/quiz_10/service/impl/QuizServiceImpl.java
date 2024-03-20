@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 
 import com.example.quiz_10.constants.RtnCode;
 import com.example.quiz_10.entity.Answer;
+import com.example.quiz_10.entity.DateTest;
 import com.example.quiz_10.entity.Quiz;
 import com.example.quiz_10.repository.AnswerDao;
 import com.example.quiz_10.repository.QuizDao;
@@ -25,6 +26,9 @@ import com.example.quiz_10.vo.BaseRes;
 import com.example.quiz_10.vo.CreateOrUpdateReq;
 import com.example.quiz_10.vo.SearchRes;
 import com.example.quiz_10.vo.StatisticsRes;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class QuizServiceImpl implements QuizService {
@@ -168,14 +172,23 @@ public class QuizServiceImpl implements QuizService {
 				return new BaseRes(RtnCode.QUIZ_NOT_FOUND.getCode(), RtnCode.QUIZ_NOT_FOUND.getMessage());
 			}
 			// 刪除整張問卷
-			quizDao.deleteByQuizId(req.getQuizList().get(0).getQuizId());
+			try {
+				quizDao.deleteByQuizId(req.getQuizList().get(0).getQuizId());
+			} catch (Exception e) {
+				return new BaseRes(RtnCode.DELETE_QUIZ_ERROR.getCode(), RtnCode.DELETE_QUIZ_ERROR.getMessage());
+			}			
 		}
 		// 根據是否要發布，再把 published 的值 set 到傳送過來的 quizList 中
 		for (Quiz item : req.getQuizList()) {
 			item.setPublished(req.isPublished());
 		}
 		// 存回DB
-		quizDao.saveAll(req.getQuizList());
+		try {
+			quizDao.saveAll(req.getQuizList());
+		} catch (Exception e) {
+			return new BaseRes(RtnCode.SAVE_QUIZ_ERROR.getCode(), RtnCode.SAVE_QUIZ_ERROR.getMessage());
+		}
+		
 		return new BaseRes(RtnCode.SUCCESS.getCode(), RtnCode.SUCCESS.getMessage());
 	}
 
@@ -285,6 +298,32 @@ public class QuizServiceImpl implements QuizService {
 			quizIdAndAnsCountMap.put(item.getKey(), answerCountMap);
 		}
 		return new StatisticsRes(RtnCode.SUCCESS.getCode(), RtnCode.SUCCESS.getMessage(), quizIdAndAnsCountMap);
+	}
+
+	@Override
+	public BaseRes objMapper(String str) {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			Quiz quiz = mapper.readValue(str, Quiz.class);
+		} catch (Exception e) {
+			// 1. 回傳固定錯誤訊息
+//			return new BaseRes(RtnCode.PARAM_ERROR.getCode(), RtnCode.PARAM_ERROR.getMessage());
+			// 2. 回傳 catch 中 exception 的錯誤訊息
+			return new BaseRes(RtnCode.ERROR_CODE, e.getMessage());
+		}
+		return new BaseRes(RtnCode.SUCCESS.getCode(), RtnCode.SUCCESS.getMessage());
+	}
+	
+	@Override
+	public BaseRes objMapper1(String str) throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			DateTest da = mapper.readValue(str, DateTest.class);
+		} catch (Exception e) {
+//			throw new Exception(e.getMessage());
+			return new BaseRes(RtnCode.ERROR_CODE, e.getMessage());
+		}
+		return new BaseRes(RtnCode.SUCCESS.getCode(), RtnCode.SUCCESS.getMessage());
 	}
 
 }

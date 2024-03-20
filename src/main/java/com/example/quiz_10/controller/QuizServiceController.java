@@ -53,5 +53,10 @@ public class QuizServiceController {
 	public StatisticsRes statistics(@RequestParam(value = "quiz_id") int quizId) {
 		return quizService.statistics(quizId);
 	}
+	
+	@PostMapping(value = "quiz/test")
+	public BaseRes objMapper(@RequestParam(value = "str") String str) throws Exception {
+		return quizService.objMapper(str);
+	}
 
 }

@@ -1,5 +1,6 @@
 package com.example.quiz_10;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,7 +8,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -171,6 +171,19 @@ class Quiz10ApplicationTests {
 		List<String> newList = new ArrayList<>();
 		int a = Collections.frequency(list, "A");
 		System.out.println(a);
+	}
+	
+	@Test
+	public void exceptionTest() throws Exception {
+		try {
+			DateTest dateTest = null;
+			dateTest.isPublished();
+			int z = 8/0;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			System.out.println("====================");
+			throw new Exception(e.getMessage());
+		}
 	}
 
 }
